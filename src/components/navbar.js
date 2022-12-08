@@ -34,16 +34,6 @@ function Navbar() {
                             </li>
                         </ul>
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <a
-                                    href="#/"
-                                    className="nav-link"
-                                    onClick={() => navigate("/login")}
-                                >
-                                    <i className="bi bi-person-fill"></i>{' '}
-                                    Login
-                                </a>
-                            </li>
                             <li className="nav-item mr-0">
                                 <a
                                     href="#/"
@@ -52,6 +42,16 @@ function Navbar() {
                                 >
                                     <i className="bi bi-check2-square"></i>{' '}
                                     Sign up
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a
+                                    href="#/"
+                                    className="nav-link"
+                                    onClick={() => navigate("/login")}
+                                >
+                                    <i className="bi bi-person-fill"></i>{' '}
+                                    Login
                                 </a>
                             </li>
                         </ul>
