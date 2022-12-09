@@ -1,15 +1,25 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 export default function NewPoll() {
     const [question, setQuestion] = useState('')
-    const [choices, setChoices] = useState([{id: 1, choice: '', votes: 0}, {id: 2, choice: '', votes: 0}])
+    const [choices, setChoices] = useState([{choice: '', votes: 0}, {choice: '', votes: 0}])
+    const [user, setUser] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate()
-    let host = window.location.href
-    let url = 'https://aqueous-fjord-64845.herokuapp.com/questions'
+    const host = window.location.href
+    let url = 'https://aqueous-fjord-64845.herokuapp.com/'
     if (host.includes('localhost')) {
-        url = 'http://localhost:3000/questions'
+        url = 'http://localhost:3000/'
     }
+    useEffect(() => {
+        const data = JSON.parse(localStorage.getItem('data'));
+        if (data) {
+            setUser(data)
+        } else {
+            setError("You need to login")
+        }
+    }, [])
 
     function handleChange(e, index) {
         const updatedChoice = {...choices[index], choice: e.target.value}
@@ -23,8 +33,8 @@ export default function NewPoll() {
 
     function addChoice(e) {
         e.preventDefault()
-        let id = choices.length+1
-        setChoices(choices => [...choices, {id: id, choice: '', votes: 0}])
+        //let id = choices.length+1
+        setChoices(choices => [...choices, {choice: '', votes: 0}])
     }
 
     function removeChoice(e, index) {
@@ -37,26 +47,54 @@ export default function NewPoll() {
     function handleSubmit(e) {
         e.preventDefault()
         const data = {
-            poll: question,
-            choices: choices,
-            comments: [],
+            user_id: user.user.id,
+            question: question,
         }
-        console.log('poll', data)
-        fetch(url, {
+        fetch(url + 'questions', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
             body: JSON.stringify(data)
         }).then(res => res.json())
-            .then(data => navigate('/vote', {
-                state: {
-                    pollId: data.id
+            .then(data => {
+                console.log(data)
+                for (const choice in choices) {
+                    fetch(url + 'choices', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            question_id: data.id,
+                            choice: choices[choice]["choice"],
+                            votes: choices[choice]["votes"]
+                        })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data)
+                            navigate('/vote', {
+                                state: {
+                                    pollID: data.question_id,
+                                    message: "Poll Created Successfully"
+                                }
+                            })
+                        })
                 }
-            }))
+            })
+            .catch(e => {
+                console.log('error', e)
+                setError("Poll not created")
+            })
     }
 
     return (
         <div className="col-sm-6">
             <h4 className="mb-3">Create a new poll</h4>
+            {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
             <form onSubmit={handleSubmit}>
                 <div className="mb-1">
                     <input
@@ -88,10 +126,12 @@ export default function NewPoll() {
                 ))}
                 <div className="mb-2">
                     <button className="btn btn-link text-decoration-none ps-0"
-                            onClick={(e) => addChoice(e)}>Add choice <i className="bi bi-file-plus"/> 
+                            onClick={(e) => addChoice(e)}>Add choice <i className="bi bi-file-plus"/>
                     </button>
                 </div>
-                <button type="submit" className="btn btn-success">Submit</button>
+                <button type="submit" className="btn btn-success" disabled={user === ''}>
+                    Submit
+                </button>
             </form>
         </div>
     )
