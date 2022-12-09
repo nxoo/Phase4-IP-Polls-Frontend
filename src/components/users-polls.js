@@ -4,7 +4,7 @@ import ContentLoader from "react-content-loader";
 import {formatRelative, formatDistance, parseISO} from "date-fns";
 import "../components/styles/polls.css"
 
-let message
+let userId
 
 const MyLoader = () => (
     <ContentLoader>
@@ -12,7 +12,7 @@ const MyLoader = () => (
     </ContentLoader>
 );
 
-function MyPolls() {
+function UsersPolls() {
     const navigate = useNavigate()
     const location = useLocation()
     const host = window.location.href
@@ -29,9 +29,7 @@ function MyPolls() {
 
     useEffect(() => {
         if (location.state !== null) {
-            let pollId = location.state.pollId
-            message = location.state.message
-            setSuccess(message)
+            userId = location.state.userId
         }
         const account = JSON.parse(localStorage.getItem('data'));
         if (account) {
@@ -40,7 +38,7 @@ function MyPolls() {
             setError("Login Required")
         }
         if (account) {
-            fetch(url + 'users/' + account.user.id, {
+            fetch(url + 'users/' + userId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,7 +47,7 @@ function MyPolls() {
             })
                 .then(res => res.json())
                 .then(data => {
-                    setPolls(data.questions)
+                    setPolls(data)
                     setLoading(false)
                 })
                 .catch(error => {
@@ -62,15 +60,6 @@ function MyPolls() {
         setLoading(false)
     }, [])
 
-    function deletePoll(x) {
-        fetch(url + 'questions/' + x, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user === '' ? null : user.token}`
-            },
-        }).then(() => navigate(0))
-    }
 
     return (
         loading ?
@@ -88,15 +77,10 @@ function MyPolls() {
                     <div className="alert alert-warning" role="alert">Your polls will appear here</div>
                     :
                     <div>
-                        <p className="fs-5">Your latest polls</p>
+                        <p className="fs-5"><b className="text-info">{polls.email}</b> latest polls</p>
                         <div className="">
-                            {polls.map(poll => (
+                            {polls.questions.map(poll => (
                                 <div key={poll.id}>
-                                    <div>
-                                        <a href="#/" className="text-danger" style={{textDecoration: 'none'}}
-                                           onClick={() => deletePoll(poll.id)}>Delete Poll{' '}
-                                            <i className="bi bi-trash3"/></a>
-                                    </div>
                                     <div className="py-3 border-bottom mb-2" id="poll"
                                          key={poll.id}
                                          onClick={() => navigate('/vote', {
@@ -118,4 +102,4 @@ function MyPolls() {
     )
 }
 
-export default MyPolls;
+export default UsersPolls;
