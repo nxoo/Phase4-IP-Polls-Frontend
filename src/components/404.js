@@ -3,9 +3,6 @@ import {useNavigate} from "react-router-dom";
 
 function NotFound() {
     const navigate = useNavigate()
-    Object.entries(localStorage).forEach(([ key, value ]) => {
-        console.log(key,value);
-    })
 
     return (
         <div className="col-sm-9">
