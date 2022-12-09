@@ -44,18 +44,18 @@ export default function Login() {
                         localStorage.setItem('data', JSON.stringify(data))
                         navigate('/settings', {
                             state: {
-                                message: "Login Success!"
+                                message: "Login Success"
                             }
                         })
                         navigate(0)
                     } else {
-                        setError("Sign up failed. Try again")
+                        setError("Login failed")
                     }
                     setEmail('');
                     setPassword('');
                 })
                 .catch(e => {
-                    setError("Sign up failed. Try again")
+                    setError("Login failed")
                 })
     }
 

@@ -50,14 +50,14 @@ export default function Signup() {
                     })
                     navigate(0)
                 } else {
-                    setError("Sign up failed. Try again")
+                    setError("Sign up failed")
                 }
                 setEmail('');
                 setPassword('');
                 setPassword2('');
             })
             .catch(e => {
-                setError("Sign up failed. Try again")
+                setError("Sign up failed")
             })
         } else {
             setError("Passwords do not match")

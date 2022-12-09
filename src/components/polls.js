@@ -27,16 +27,18 @@ function Polls() {
         })
             .then(res => res.json())
             .then(data => {
-                console.log('dddd', data)
+                console.log('data', data)
                 if (data.questions) {
                     setPolls(data)
                     setLoading(false)
                 }
             })
             .catch(error => {
-                setError(error.message)
+                console.log('error', error)
+                setError(error.message || error)
                 setLoading(false)
             })
+        setLoading(false)
     }, [])
 
 
@@ -50,7 +52,6 @@ function Polls() {
     }
      */
 
-    console.log(polls)
     return (
         loading ?
             <>
@@ -64,7 +65,7 @@ function Polls() {
                 {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
                 {success ? <div className="alert alert-success" role="alert">{success}</div> : null}
                 {polls.length === 0 ?
-                    <div className="alert alert-warning" role="alert">There are no polls.</div>
+                    <div className="alert alert-warning" role="alert">There are no polls</div>
                      :
                     <div>
                         <h4 className="mb-3">Latest polls</h4>
