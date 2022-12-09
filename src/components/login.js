@@ -42,7 +42,7 @@ export default function Login() {
                         setError(data.message)
                     } else if (data.status === 200) {
                         localStorage.setItem('data', JSON.stringify(data))
-                        navigate('/settings', {
+                        navigate('/', {
                             state: {
                                 message: "Login Success"
                             }

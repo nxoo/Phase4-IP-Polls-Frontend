@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import ContentLoader from "react-content-loader";
+let message
 
 const MyLoader = () => (
     <ContentLoader>
@@ -10,6 +11,7 @@ const MyLoader = () => (
 
 function Polls() {
     let navigate = useNavigate()
+    const location = useLocation()
     let host = window.location.href
     let url = 'https://aqueous-fjord-64845.herokuapp.com/questions'
     if (host.includes('localhost')) {
@@ -18,9 +20,13 @@ function Polls() {
     let [polls, setPolls] = useState([])
     let [loading, setLoading] = useState(true)
     let [error, setError] = useState()
-    const [success, setSuccess] = useState('');
+    let [success, setSuccess] = useState('');
 
     useEffect(() => {
+        if (location.state !== null) {
+            message = location.state.message
+            setSuccess(message)
+        }
         fetch(url, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'},
