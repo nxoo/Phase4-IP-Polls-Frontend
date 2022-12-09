@@ -18,25 +18,29 @@ export default function Results() {
     const location = useLocation()
     const navigate = useNavigate()
     const [poll, setPoll] = useState()
+    const [user, setUser] = useState()
     const [error, setError] = useState()
     const [loading, setLoading] = useState(true)
     const [success, setSuccess] = useState(false)
     const [choice, setChoice] = useState()
 
     useEffect(() => {
+        const data = JSON.parse(localStorage.getItem('data'));
+        if (data) setUser(data)
         if (location.state === null) {
             navigate('/')
             return
         } else {
-            let host = window.location.href
+            const host = window.location.href
+            console.log(location.state)
             pollId = location.state.pollId
             if (location.state.choice) {
-                setChoice(location.state.choice[0])
-                setSuccess(true)
+                setChoice(location.state.choice)
+                setSuccess(location.state.choice)
             }
-            url = 'https://aqueous-fjord-64845.herokuapp.com/questions' + pollId
+            url = 'https://aqueous-fjord-64845.herokuapp.com/questions/' + pollId
             if (host.includes('localhost')) {
-                url = 'http://localhost:3000/questions' + pollId
+                url = 'http://localhost:3000/questions/' + pollId
             }
         }
 
@@ -75,8 +79,10 @@ export default function Results() {
             </>
             :
             <div className=" col-sm-6">
-                {success? successMessage(choice['choice']):null}
-                <h4 className="mb-3">{poll.poll}</h4>
+                {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
+                {success ? <div className="alert alert-success" role="alert">
+                    Voted for <b>{success}</b></div> : null}
+                <h4 className="mb-3">{poll.question}</h4>
                 <ul className="list-group list-group-flush">
                     {poll.choices.map(choice => (
                         <li key={choice.id}
@@ -90,7 +96,7 @@ export default function Results() {
                     ))}
                 </ul>
                 <div>
-                    <button className="btn btn-link text-decoration-none mt-2 ps-0"
+                    <button className="btn btn-outline-secondary text-decoration-none mt-2"
                             onClick={() => navigate("/vote", {
                                 state: {pollId: poll.id}
                             })}>Vote Again
