@@ -11,9 +11,9 @@ const MyLoader = () => (
 function Polls() {
     let navigate = useNavigate()
     let host = window.location.href
-    let url = 'https://nxoo-json-server.herokuapp.com/polls'
+    let url = 'https://nxoo-json-server.herokuapp.com/questions'
     if (host.includes('localhost')) {
-        url = 'http://localhost:3000/polls/'
+        url = 'http://localhost:3000/questions'
     }
     let [polls, setPolls] = useState([])
     let [loading, setLoading] = useState(true)
@@ -21,15 +21,29 @@ function Polls() {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        fetch(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        })
             .then(res => res.json())
             .then(data => {
-                setPolls(data)
+                console.log('dddd', data)
+                if (data.length === 0) {
+                    setError('There are no polls')
+                    setLoading(false)
+                } else if (data.questions) {
+                    setPolls(data)
+                    setLoading(false)
+                }
+            })
+            .catch(error => {
+                setError(error.message)
                 setLoading(false)
             })
-            .catch(error => setError(error))
     }, [])
 
+
+    /*
     if (error) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -37,7 +51,9 @@ function Polls() {
             </div>
         )
     }
+     */
 
+    console.log(polls)
     return (
         loading ?
             <>
@@ -57,7 +73,7 @@ function Polls() {
                         <div className="table-responsive">
                             <table className="table table-striped text-nowrap">
                                 <tbody className="">
-                                {polls.map(poll => (
+                                {[].map(poll => (
                                     <tr className="py-5" key={poll.id}>
                                         <td className="px-sm-5">{poll.id}</td>
                                         <td className="fw-bold text-secondary">{poll.poll}</td>
