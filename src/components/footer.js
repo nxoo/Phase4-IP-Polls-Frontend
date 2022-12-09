@@ -2,12 +2,11 @@ import React from "react";
 import {useNavigate} from "react-router-dom"
 
 function Footer() {
-    let navigate = useNavigate()
+    const navigate = useNavigate()
 
     return (
         <div style={{marginTop: '75px'}}>
             <footer>
-                <hr/>
                 <div className="row">
                     <div className="col-sm-4 mb-3">
                         <h5>Quick Links</h5>
