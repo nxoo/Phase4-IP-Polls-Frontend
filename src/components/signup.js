@@ -5,13 +5,16 @@ let message
 export default function Signup() {
     const navigate = useNavigate()
     const location = useLocation()
-    const url = 'http://localhost:8000/users'
+    let host = window.location.href
+    let url = 'https://nxoo-json-server.herokuapp.com/signup'
+    if (host.includes('localhost')) {
+        url = 'http://localhost:3000/signup/'
+    }
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [user, setUser] = useState('')
 
     useEffect(() => {
         if (location.state !== null) {
@@ -36,13 +39,13 @@ export default function Signup() {
             .then(res => res.json())
             .then(data => {
                 console.log('r', data)
-                if (data === null) {
-                    setError("Sign up failed. Try again")
-                } else if (data.id) {
+                if (data.status === 401) {
+                    setError(data.message)
+                } else if (data.status === 201) {
                     localStorage.setItem('user', JSON.stringify(data))
-                    navigate('/profile', {
+                    navigate('/login', {
                         state: {
-                            message: "Sign up Success!"
+                            message: data.message
                         }
                     })
                     navigate(0)
@@ -52,6 +55,9 @@ export default function Signup() {
                 setEmail('');
                 setPassword('');
                 setPassword2('');
+            })
+            .catch(e => {
+                setError("Sign up failed. Try again")
             })
         } else {
             setError("Passwords do not match")

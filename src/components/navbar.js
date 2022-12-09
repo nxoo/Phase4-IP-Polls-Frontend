@@ -1,11 +1,27 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"
+import React, {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom"
 import {Outlet} from "react-router-dom"
 import Footer from "./footer";
 
 
 function Navbar() {
     let navigate = useNavigate()
+    const [user, setUser] = useState('');
+
+    useEffect(() => {
+        const data = JSON.parse(localStorage.getItem('data'));
+        if (data) setUser(data)
+    }, [])
+
+    function logout() {
+        localStorage.removeItem('data');
+        if (user) setUser('')
+        navigate('/login', {
+            state: {
+                message: "Logout Success!"
+            }
+        })
+    }
 
     return (
         <div>
@@ -34,26 +50,60 @@ function Navbar() {
                             </li>
                         </ul>
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li className="nav-item mr-0">
-                                <a
-                                    href="#/"
-                                    className="nav-link"
-                                    onClick={() => navigate("/signup")}
-                                >
-                                    <i className="bi bi-check2-square"></i>{' '}
-                                    Sign up
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a
-                                    href="#/"
-                                    className="nav-link"
-                                    onClick={() => navigate("/login")}
-                                >
-                                    <i className="bi bi-person-fill"></i>{' '}
-                                    Login
-                                </a>
-                            </li>
+                            {user ?
+                                <li className="nav-item dropdown">
+                                    <a className="nav-link dropdown-toggle" href="#/" role="button"
+                                       data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i className="bi bi-person-circle"/> {user? user.user.email : 'Profile'}
+                                    </a>
+                                    <ul className="dropdown-menu">
+                                        <li>
+                                            <a
+                                                href="#/"
+                                                className="dropdown-item"
+                                                onClick={() => navigate("/settings")}
+                                            ><i className="bi bi-gear-fill"></i>{' '} Settings</a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="#/"
+                                                className="dropdown-item"
+                                                onClick={() => navigate("/settings")}
+                                            ><i className="bi bi-card-list"/>{' '} My Polls</a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="#/"
+                                                className="dropdown-item"
+                                                onClick={() => logout()}
+                                            ><i className="bi bi-box-arrow-left"></i>{' '} Logout</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                :
+                                <>
+                                    <li className="nav-item mr-0">
+                                        <a
+                                            href="#/"
+                                            className="nav-link"
+                                            onClick={() => navigate("/signup")}
+                                        >
+                                            <i className="bi bi-check2-square"></i>{' '}
+                                            Sign up
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a
+                                            href="#/"
+                                            className="nav-link"
+                                            onClick={() => navigate("/login")}
+                                        >
+                                            <i className="bi bi-person-fill"></i>{' '}
+                                            Login
+                                        </a>
+                                    </li>
+                                </>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -62,7 +112,7 @@ function Navbar() {
                 <Outlet/>
             </div>
             <div className="container col-sm-9">
-                <Footer />
+                <Footer/>
             </div>
         </div>
     )

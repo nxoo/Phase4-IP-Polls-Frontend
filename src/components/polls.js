@@ -9,16 +9,16 @@ const MyLoader = () => (
 );
 
 function Polls() {
-    let [polls, setPolls] = useState([])
-    let [loading, setLoading] = useState(true)
-    let [error, setError] = useState()
     let navigate = useNavigate()
     let host = window.location.href
     let url = 'https://nxoo-json-server.herokuapp.com/polls'
     if (host.includes('localhost')) {
-        //url = 'http://localhost:8000/polls/'
-        url = 'https://nxoo-json-server.herokuapp.com/polls'
+        url = 'http://localhost:3000/polls/'
     }
+    let [polls, setPolls] = useState([])
+    let [loading, setLoading] = useState(true)
+    let [error, setError] = useState()
+    const [success, setSuccess] = useState('');
 
     useEffect(() => {
         fetch(url)
@@ -48,6 +48,8 @@ function Polls() {
             </>
             :
             <>
+                {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
+                {success ? <div className="alert alert-success" role="alert">{success}</div> : null}
                 {polls.length === 0 ?
                     <h4>No polls</h4> :
                     <div>
