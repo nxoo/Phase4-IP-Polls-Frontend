@@ -24,9 +24,9 @@ export default function Vote() {
         } else {
             let host = window.location.href
             pollId = location.state.pollId
-            url = 'https://nxoo-json-server.herokuapp.com/polls/' + pollId
+            url = 'https://opinion-polls-api.herokuapp.com/questions' + pollId
             if (host.includes('localhost')) {
-                url = 'http://localhost:8000/polls/' + pollId
+                url = 'http://localhost:3000/questions/' + pollId
             }
         }
 

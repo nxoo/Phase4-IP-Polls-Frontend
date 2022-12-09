@@ -6,10 +6,9 @@ export default function NewPoll() {
     const [choices, setChoices] = useState([{id: 1, choice: '', votes: 0}, {id: 2, choice: '', votes: 0}])
     const navigate = useNavigate()
     let host = window.location.href
-    let url = 'https://nxoo-json-server.herokuapp.com/polls'
+    let url = 'https://opinion-polls-api.herokuapp.com/questions'
     if (host.includes('localhost')) {
-        //url = 'http://localhost:8000/polls'
-        url = 'https://nxoo-json-server.herokuapp.com/'
+        url = 'http://localhost:3000/questions'
     }
 
     function handleChange(e, index) {

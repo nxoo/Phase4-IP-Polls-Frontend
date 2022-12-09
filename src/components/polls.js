@@ -11,7 +11,7 @@ const MyLoader = () => (
 function Polls() {
     let navigate = useNavigate()
     let host = window.location.href
-    let url = 'https://nxoo-json-server.herokuapp.com/questions'
+    let url = 'https://opinion-polls-api.herokuapp.com/questions'
     if (host.includes('localhost')) {
         url = 'http://localhost:3000/questions'
     }

@@ -34,9 +34,9 @@ export default function Results() {
                 setChoice(location.state.choice[0])
                 setSuccess(true)
             }
-            url = 'https://nxoo-json-server.herokuapp.com/polls/' + pollId
+            url = 'https://opinion-polls-api.herokuapp.com/questions' + pollId
             if (host.includes('localhost')) {
-                url = 'http://localhost:8000/polls/' + pollId
+                url = 'http://localhost:3000/questions' + pollId
             }
         }
 
