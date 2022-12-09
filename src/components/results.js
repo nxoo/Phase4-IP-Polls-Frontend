@@ -34,7 +34,7 @@ export default function Results() {
                 setChoice(location.state.choice[0])
                 setSuccess(true)
             }
-            url = 'https://opinion-polls-api.herokuapp.com/questions' + pollId
+            url = 'https://aqueous-fjord-64845.herokuapp.com/questions' + pollId
             if (host.includes('localhost')) {
                 url = 'http://localhost:3000/questions' + pollId
             }

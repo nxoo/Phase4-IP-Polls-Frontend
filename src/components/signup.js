@@ -6,7 +6,7 @@ export default function Signup() {
     const navigate = useNavigate()
     const location = useLocation()
     let host = window.location.href
-    let url = 'https://opinion-polls-api.herokuapp.com/signup'
+    let url = 'https://aqueous-fjord-64845.herokuapp.com/signup'
     if (host.includes('localhost')) {
         url = 'http://localhost:3000/signup/'
     }

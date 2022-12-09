@@ -24,7 +24,7 @@ export default function Vote() {
         } else {
             let host = window.location.href
             pollId = location.state.pollId
-            url = 'https://opinion-polls-api.herokuapp.com/questions' + pollId
+            url = 'https://aqueous-fjord-64845.herokuapp.com/questions' + pollId
             if (host.includes('localhost')) {
                 url = 'http://localhost:3000/questions/' + pollId
             }
