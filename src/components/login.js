@@ -1,16 +1,20 @@
 import React, {useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
+
 let message
 
 export default function Login() {
     const navigate = useNavigate()
     const location = useLocation()
-    const url = 'http://localhost:8000/users'
+    let host = window.location.href
+    let url = 'https://nxoo-json-server.herokuapp.com/login'
+    if (host.includes('localhost')) {
+        url = 'http://localhost:3000/login/'
+    }
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [user, setUser] = useState('')
 
     useEffect(() => {
         if (location.state !== null) {
@@ -25,31 +29,34 @@ export default function Login() {
             email: email,
             password: password,
         }
-        
-        fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log('r', data)
-                if (data === null) {
-                    setError("Sign up failed. Try again")
-                } else if (data.id) {
-                    localStorage.setItem('user', JSON.stringify(data))
-                    navigate('/profile', {
-                        state: {
-                            message: "Login Success!"
-                        }
-                    })
-                    navigate(0)
-                } else {
-                    setError("Sign up failed. Try again")
-                }
-                setEmail('');
-                setPassword('');
+
+            fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
             })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('r', data)
+                    if (data.status === 401) {
+                        setError(data.message)
+                    } else if (data.status === 200) {
+                        localStorage.setItem('data', JSON.stringify(data))
+                        navigate('/settings', {
+                            state: {
+                                message: "Login Success!"
+                            }
+                        })
+                        navigate(0)
+                    } else {
+                        setError("Sign up failed. Try again")
+                    }
+                    setEmail('');
+                    setPassword('');
+                })
+                .catch(e => {
+                    setError("Sign up failed. Try again")
+                })
     }
 
     return (
