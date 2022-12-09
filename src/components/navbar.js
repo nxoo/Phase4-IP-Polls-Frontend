@@ -5,7 +5,7 @@ import Footer from "./footer";
 
 
 function Navbar() {
-    let navigate = useNavigate()
+    const navigate = useNavigate()
     const [user, setUser] = useState('');
 
     useEffect(() => {
@@ -51,7 +51,7 @@ function Navbar() {
                         </ul>
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             {user ?
-                                <li className="nav-item dropdown">
+                                <li className="nav-item dropdown mr-5">
                                     <a className="nav-link dropdown-toggle" href="#/" role="button"
                                        data-bs-toggle="dropdown" aria-expanded="false">
                                         <i className="bi bi-person-circle"/> {user? user.user.email : 'Profile'}
@@ -61,14 +61,7 @@ function Navbar() {
                                             <a
                                                 href="#/"
                                                 className="dropdown-item"
-                                                onClick={() => navigate("/settings")}
-                                            ><i className="bi bi-gear-fill"></i>{' '} Settings</a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="#/"
-                                                className="dropdown-item"
-                                                onClick={() => navigate("/settings")}
+                                                onClick={() => navigate("/my-polls")}
                                             ><i className="bi bi-card-list"/>{' '} My Polls</a>
                                         </li>
                                         <li>
@@ -82,7 +75,7 @@ function Navbar() {
                                 </li>
                                 :
                                 <>
-                                    <li className="nav-item mr-0">
+                                    <li className="nav-item">
                                         <a
                                             href="#/"
                                             className="nav-link"
