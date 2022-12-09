@@ -1,0 +1,13 @@
+#poll {
+    cursor: pointer;
+}
+#poll:hover {
+    background-color: #f8f9fa;
+    padding-left: 30px;
+}
+#pollOwner {
+    color: #08a8c7;
+}
+#pollOwner:hover {
+    color: #198754;
+}
