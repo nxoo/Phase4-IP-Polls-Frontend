@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import ContentLoader from "react-content-loader";
+import {formatRelative, formatDistance, parseISO} from "date-fns";
+import "../components/styles/polls.css"
+
 let message
 
 const MyLoader = () => (
@@ -10,37 +13,54 @@ const MyLoader = () => (
 );
 
 function Polls() {
-    let navigate = useNavigate()
+    const navigate = useNavigate()
     const location = useLocation()
-    let host = window.location.href
-    let url = 'https://aqueous-fjord-64845.herokuapp.com/questions'
+    const host = window.location.href
+    let url = 'https://aqueous-fjord-64845.herokuapp.com/'
     if (host.includes('localhost')) {
-        url = 'http://localhost:3000/questions'
+        url = 'http://localhost:3000/'
     }
-    let [polls, setPolls] = useState([])
-    let [loading, setLoading] = useState(true)
-    let [error, setError] = useState()
-    let [success, setSuccess] = useState('');
+    const [polls, setPolls] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState('')
+    const [error, setError] = useState('')
+    const [success, setSuccess] = useState('');
+    const [users, setUsers] = useState([])
 
     useEffect(() => {
         if (location.state !== null) {
             message = location.state.message
             setSuccess(message)
         }
-        fetch(url, {
+        const data = JSON.parse(localStorage.getItem('data'));
+        if (data) {
+            setUser(data)
+        }
+        fetch(url + 'questions', {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${data === null ? user.token : data.token}`
+            },
         })
             .then(res => res.json())
             .then(data => {
-                console.log('data', data)
-                if (data.questions) {
+                fetch(url + 'users', {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        setUsers(data)
+                    })
+                if (data) {
                     setPolls(data)
                     setLoading(false)
                 }
             })
             .catch(error => {
-                console.log('error', error)
                 setError(error.message || error)
                 setLoading(false)
             })
@@ -48,16 +68,8 @@ function Polls() {
     }, [])
 
 
-    /*
-    if (error) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                Error fetching polls! Try again later.
-            </div>
-        )
-    }
-     */
-
+    console.log(polls)
+    console.log(users)
     return (
         loading ?
             <>
@@ -70,36 +82,28 @@ function Polls() {
             <>
                 {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
                 {success ? <div className="alert alert-success" role="alert">{success}</div> : null}
-                {polls.length === 0 ?
+                {polls.length === 0?
                     <div className="alert alert-warning" role="alert">There are no polls</div>
-                     :
+                    :
                     <div>
-                        <h4 className="mb-3">Latest polls</h4>
-                        <div className="table-responsive">
-                            <table className="table table-striped text-nowrap">
-                                <tbody className="">
-                                {[].map(poll => (
-                                    <tr className="py-5" key={poll.id}>
-                                        <td className="px-sm-5">{poll.id}</td>
-                                        <td className="fw-bold text-secondary">{poll.poll}</td>
-                                        <td className="">
-                                            <button
-                                                className="btn btn-success btn-sm text-white mx-2"
-                                                onClick={() => navigate('/vote', {
-                                                    state: {pollId: poll.id}
-                                                })}>Vote
-                                            </button>
-                                            <button
-                                                className="btn btn-outline-secondary btn-sm mx-2"
-                                                onClick={() => navigate('/results', {
-                                                    state: {pollId: poll.id}
-                                                })}>Results
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                        <p className="fs-5">Latest polls</p>
+                        <div className="">
+                            {polls.map(poll => (
+                                <div className="py-3 border-bottom" id="poll"
+                                     key={poll.id}
+                                     onClick={() => navigate('/vote', {
+                                         state: {pollId: poll.id}
+                                     })}>
+                                    <div className="fw-bold text-secondary">
+                                        <div className="mb-2">
+                                            {formatRelative(parseISO(poll.created_at), new Date())} {' '}by: {' '}
+                                            <span><a id="pollOwner" href="#/"
+                                                     onClick={() => navigate('/users/' + poll.id)}>
+                                                brian@gmail.com</a></span></div>
+                                        <h3 className="">{poll.question}</h3>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 }
