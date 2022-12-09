@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import ContentLoader from "react-content-loader";
+
 let pollId, url;
 
 const MyLoader = () => (
@@ -13,9 +14,11 @@ export default function Vote() {
     const location = useLocation()
     const navigate = useNavigate()
     const [poll, setPoll] = useState()
+    const [user, setUser] = useState('')
     const [error, setError] = useState()
     const [choiceId, setChoiceId] = useState()
     const [loading, setLoading] = useState(true)
+    const [success, setSuccess] = useState(false)
 
     useEffect(() => {
         if (location.state === null) {
@@ -24,13 +27,18 @@ export default function Vote() {
         } else {
             let host = window.location.href
             pollId = location.state.pollId
-            url = 'https://aqueous-fjord-64845.herokuapp.com/questions' + pollId
+            url = 'https://aqueous-fjord-64845.herokuapp.com/'
             if (host.includes('localhost')) {
-                url = 'http://localhost:3000/questions/' + pollId
+                url = 'http://localhost:3000/'
             }
         }
-
-        fetch(url)
+        const data = JSON.parse(localStorage.getItem('data'));
+        if (data) {
+            setUser(data)
+        } else {
+            setError("You need to login")
+        }
+        fetch(url + 'questions/' + pollId)
             .then(res => res.json())
             .then(data => {
                 setPoll(data)
@@ -41,32 +49,19 @@ export default function Vote() {
 
     function handleSubmit(e) {
         e.preventDefault()
-        const newChoice = poll['choices'].map(choice => {
-            if (parseInt(choiceId) === choice.id) {
-                return {...choice, votes: choice.votes + 1}
-            }
-            return choice
-        })
-        let newState = {...poll, choices: newChoice}
-        fetch(url, {
+        let filteredChoice = poll.choices.find(x => x.id === parseInt(choiceId));
+        let newChoice = {question_id: pollId, votes: filteredChoice.votes + 1}
+        fetch(url + 'choices/' + choiceId, {
             method: 'PATCH',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newState)
+            body: JSON.stringify(newChoice)
         }).then(res => res.json())
             .then(data => navigate('/results', {
                 state: {
-                    pollId: data.id,
-                    choice: data['choices'].filter(choice => parseInt(choiceId) === choice.id)
+                    pollId: data.question_id,
+                    choice: data.choice
                 }
             }))
-    }
-
-    if (error) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                Error fetching poll
-            </div>
-        )
     }
 
     return (
@@ -79,7 +74,9 @@ export default function Vote() {
             </>
             :
             <div>
-                <h4 className="mb-3">{poll.poll}</h4>
+                <h4 className="mb-3">{poll.question}</h4>
+                {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
+                {success ? <div className="alert alert-success" role="alert">{success}</div> : null}
                 <form onSubmit={(e) => handleSubmit(e)}>
                     {poll.choices.map(choice => (
                         <div className="form-check" key={choice.id}>
@@ -91,10 +88,10 @@ export default function Vote() {
                             </label>
                         </div>
                     ))}
-                    <input className="btn btn-success mt-3" type="submit" value="Vote"/>
+                    <input className="btn btn-success mt-3" disabled={user===''} type="submit" value="Vote"/>
                 </form>
                 <div>
-                    <button className="btn btn-link text-decoration-none mt-2 ps-0"
+                    <button className="btn btn-outline-secondary text-decoration-none mt-3"
                             onClick={() => navigate("/results", {
                                 state: {pollId: poll.id}
                             })}>See Results
