@@ -6,7 +6,7 @@ let message
 export default function Login() {
     const navigate = useNavigate()
     const location = useLocation()
-    let host = window.location.href
+    const host = window.location.href
     let url = 'https://aqueous-fjord-64845.herokuapp.com/login'
     if (host.includes('localhost')) {
         url = 'http://localhost:3000/login/'
