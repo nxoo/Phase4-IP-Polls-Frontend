@@ -64,7 +64,6 @@ function Polls() {
                 setError(error.message || error)
                 setLoading(false)
             })
-        setLoading(false)
     }, [])
 
     function fetchPollOwner(pollId) {
@@ -105,7 +104,9 @@ function Polls() {
                 {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
                 {success ? <div className="alert alert-success" role="alert">{success}</div> : null}
                 <div>
-                    <p className="fs-5">{polls.length===0? 'No poll' :'Latest polls'}</p>
+                    <p className="fs-5">{polls.length===0 ?
+                        <div className="alert alert-warning" role="alert">There are no polls</div>
+                        :'Latest polls'}</p>
                     <div className="">
                         {polls.map(poll => (
                             <div className="" key={poll.id}>
