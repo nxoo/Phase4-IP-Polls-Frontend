@@ -104,37 +104,33 @@ function Polls() {
             <>
                 {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
                 {success ? <div className="alert alert-success" role="alert">{success}</div> : null}
-                {polls.length === 0 ?
-                    <div className="alert alert-warning" role="alert">There are no polls</div>
-                    :
-                    <div>
-                        <p className="fs-5">Latest polls</p>
-                        <div className="">
-                            {polls.map(poll => (
-                                <div className="" key={poll.id}>
-                                    <div>
-                                        By <span className="" id="pollOwner"
-                                                 onClick={() => MyPolls(poll)}>
+                <div>
+                    <p className="fs-5">{polls.length===0? 'No poll' :'Latest polls'}</p>
+                    <div className="">
+                        {polls.map(poll => (
+                            <div className="" key={poll.id}>
+                                <div>
+                                    By <span className="" id="pollOwner"
+                                             onClick={() => MyPolls(poll)}>
                                                 {fetchPollOwner(poll.user_id)}
                                     </span> <i className="bi bi-arrow-up-right"/>
-                                    </div>
-                                    <div className="py-3 border-bottom mb-2" id="poll"
-                                         key={poll.id}
-                                         onClick={() => navigate('/vote', {
-                                             state: {pollId: poll.id}
-                                         })}>
-                                        <div className="fw-bold text-secondary">
-                                            <h3 className="">{poll.question}</h3>
-                                            <div className="mb-2">
-                                                {formatRelative(parseISO(poll.created_at), new Date())}
-                                            </div>
+                                </div>
+                                <div className="py-3 border-bottom mb-2" id="poll"
+                                     key={poll.id}
+                                     onClick={() => navigate('/vote', {
+                                         state: {pollId: poll.id}
+                                     })}>
+                                    <div className="fw-bold text-secondary">
+                                        <h3 className="">{poll.question}</h3>
+                                        <div className="mb-2">
+                                            {formatRelative(parseISO(poll.created_at), new Date())}
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
-                }
+                </div>
             </>
     )
 }
