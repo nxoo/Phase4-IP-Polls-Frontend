@@ -27,6 +27,7 @@ export default function Vote() {
         } else {
             let host = window.location.href
             pollId = location.state.pollId
+            setSuccess(location.state.message)
             url = 'https://aqueous-fjord-64845.herokuapp.com/'
             if (host.includes('localhost')) {
                 url = 'http://localhost:3000/'

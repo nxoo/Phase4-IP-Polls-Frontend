@@ -78,7 +78,7 @@ export default function NewPoll() {
                             console.log(data)
                             navigate('/vote', {
                                 state: {
-                                    pollID: data.question_id,
+                                    pollId: data.question_id,
                                     message: "Poll Created Successfully"
                                 }
                             })

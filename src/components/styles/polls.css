@@ -8,6 +8,9 @@
 #pollOwner {
     color: #08a8c7;
 }
+#pollOwner {
+    cursor: pointer;
+}
 #pollOwner:hover {
     color: #198754;
 }

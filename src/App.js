@@ -8,6 +8,8 @@ import Signup from "./components/signup";
 import NotFound from "./components/404";
 import Vote from "./components/vote";
 import Results from "./components/results";
+import MyPolls from "./components/my-polls";
+import UsersPolls from "./components/users-polls";
 import './App.css';
 
 
@@ -22,6 +24,8 @@ export default function App() {
                     <Route path='/signup' element={<Signup/>}/>
                     <Route path='/vote' element={<Vote/>}/>
                     <Route path='/results' element={<Results/>}/>
+                    <Route path='/my-polls' element={<MyPolls/>}/>
+                    <Route path='/users-polls' element={<UsersPolls/>}/>
                     <Route path='*' element={<NotFound/>}/> {/* catch 404 urls */}
                 </Route>
             </Routes>
