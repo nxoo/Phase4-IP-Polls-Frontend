@@ -34,29 +34,22 @@ function UsersPolls() {
         const account = JSON.parse(localStorage.getItem('data'));
         if (account) {
             setUser(account)
-        } else {
-            setError("Login Required")
         }
-        if (account) {
-            fetch(url + 'users/' + userId, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${account === '' ? user.token : account.token}`
-                },
+        fetch(url + 'users/' + userId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(res => res.json())
+            .then(data => {
+                setPolls(data)
+                setLoading(false)
             })
-                .then(res => res.json())
-                .then(data => {
-                    setPolls(data)
-                    setLoading(false)
-                })
-                .catch(error => {
-                    setError(error.message || error)
-                    setLoading(false)
-                })
-        } else {
-            setError('Login Required')
-        }
+            .catch(error => {
+                setError(error.message || error)
+                setLoading(false)
+            })
         setLoading(false)
     }, [])
 

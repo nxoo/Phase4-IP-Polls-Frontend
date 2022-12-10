@@ -75,7 +75,13 @@ function Polls() {
     }
 
     function MyPolls(poll) {
-        if (user.user.id === poll.user_id) {
+        if (!user) {
+            navigate("users-polls", {
+                state: {
+                    userId: poll.user_id
+                }
+            })
+        } else if (user.user.id === poll.user_id) {
             navigate("my-polls")
         } else {
             navigate("users-polls", {
