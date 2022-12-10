@@ -50,7 +50,6 @@ function UsersPolls() {
                 setError(error.message || error)
                 setLoading(false)
             })
-        setLoading(false)
     }, [])
 
 

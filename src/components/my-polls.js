@@ -59,7 +59,6 @@ function MyPolls() {
         } else {
             setError('Login Required')
         }
-        setLoading(false)
     }, [])
 
     function deletePoll(x) {
